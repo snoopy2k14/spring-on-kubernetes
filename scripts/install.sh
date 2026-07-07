@@ -2,9 +2,12 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-
-echo "Installing kind"
-../config/kind/deploy.sh
+if ! kind get clusters | grep -qx "local"; then
+  echo "Installing kind"
+  ../config/kind/deploy.sh
+else
+  echo "kind cluster 'local' already exists, skipping"
+fi
 echo "Waiting for state stabalization"
 sleep 5
 echo "Installing ingress"
